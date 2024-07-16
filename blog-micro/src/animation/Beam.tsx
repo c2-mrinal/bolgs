@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export interface AnimatedBeamProps {
+  node:any;
   className?: string;
   containerRef: RefObject<HTMLElement>; // Container ref
   fromRef: RefObject<HTMLElement>;
@@ -26,6 +27,7 @@ export interface AnimatedBeamProps {
 }
 
 export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
+  node,
   className,
   containerRef,
   fromRef,
@@ -64,8 +66,11 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
       };
 
   useEffect(() => {
+    console.log(node);
+    
     const updatePath = () => {
-      if (containerRef.current && fromRef.current && toRef.current) {
+      debugger
+      if (containerRef?.current && fromRef?.current && toRef?.current) {
         const containerRect = containerRef.current.getBoundingClientRect();
         const rectA = fromRef.current.getBoundingClientRect();
         const rectB = toRef.current.getBoundingClientRect();

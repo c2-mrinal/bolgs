@@ -1,9 +1,7 @@
-"use client";
-
-import { cn } from "@/lib/utils";
-import { AnimatedBeam } from "../../animation/Beam";
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useRef } from "react";
 import "../blog.css";
+import ShineBorder from "@/animation/ShineBorder";
+import { AnimatedBeam } from "@/animation/Beam";
 
 const filterList: { [key: string]: string } = {
   16: "React 16",
@@ -50,7 +48,7 @@ interface SelectedFilter {
 }
 
 const Filter: React.FC<FilterProps> = ({ filterFunc }) => {
-  const [expandedFilter, setExpandedFilter] = useState<string >("");
+  const [expandedFilter, setExpandedFilter] = useState<string | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<SelectedFilter>({
     version: "",
     usability: "",
@@ -58,7 +56,7 @@ const Filter: React.FC<FilterProps> = ({ filterFunc }) => {
   });
 
   const handleFilterClick = (filter: string) => {
-    setExpandedFilter(expandedFilter === filter ? "" : filter);
+    setExpandedFilter(expandedFilter === filter ? null : filter);
   };
 
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -66,7 +64,7 @@ const Filter: React.FC<FilterProps> = ({ filterFunc }) => {
       ...selectedFilter,
       [expandedFilter!]: event.target.value,
     };
-    setExpandedFilter("");
+    setExpandedFilter(null);
     setSelectedFilter(data);
     filterFunc(data);
   };
@@ -75,45 +73,51 @@ const Filter: React.FC<FilterProps> = ({ filterFunc }) => {
     const options = filterData[expandedFilter!];
     return (
       <div className="dropdown-container">
-        <select onChange={handleSelectChange} value={selectedFilter[expandedFilter]} defaultValue={expandedFilter!}>
-          {options.map((val) => (
+        <select onChange={handleSelectChange} value={selectedFilter[expandedFilter!]} defaultValue={expandedFilter!}>
+          {options?.map((val) => (
             <option key={val.value} value={val.value}>{val.name}</option>
           ))}
         </select>
-        <span onClick={() => setExpandedFilter("")} className="closeDropDown">
+        <span onClick={() => setExpandedFilter(null)} className="closeDropDown">
           &#10008;
         </span>
       </div>
     );
   };
+  let selVersion =  selectedFilter.version,
+  selUsable = selectedFilter.usability,
+  selPurpose = selectedFilter.purpose;
 
   return (
     <div className="filter-container">
-      <div className={`filter-box ${expandedFilter ? "expanded" : ""}`}>
+        <ShineBorder borderRadius={25} color={["#A07CFE", "#FE8FB5", "#FFBE7B"]} className={`filter-box ${expandedFilter ? "expanded" : ""}`}>
+      {/* <div className={`filter-box ${expandedFilter ? "expanded" : ""}`}> */}
         {!expandedFilter && (
           <>
-            <div className="filter-part" onClick={() => handleFilterClick("version")}>
-              {selectedFilter.version && <div className="selected-filter">{filterList[selectedFilter.version]}</div>}
-              <div className="select-filter">Version</div>
+            <div className="filter-part pipe-border" onClick={() => handleFilterClick("version")}>
+              {selVersion && <div className="selected-filter">{filterList[selVersion]}</div>}
+              <div className={`${selVersion? "select-filter": "" }`}>Version</div>
             </div>
-            <div className="filter-part" onClick={() => handleFilterClick("usability")}>
-              {selectedFilter.usability && <div className="selected-filter">{filterList[selectedFilter.usability]}</div>}
-              <div className="select-filter">Usability</div>
+            <div className="filter-part pipe-border" onClick={() => handleFilterClick("usability")}>
+              {selUsable && <div className="selected-filter">{filterList[selUsable]}</div>}
+              <div className={`${selUsable? "select-filter": "" }`}>Usability</div>
             </div>
             <div className="filter-part" onClick={() => handleFilterClick("purpose")}>
-              {selectedFilter.purpose && <div className="selected-filter">{filterList[selectedFilter.purpose]}</div>}
-              <div className="select-filter">Purpose</div>
+              {selPurpose && <div className="selected-filter">{filterList[selPurpose]}</div>}
+              <div className={`${selPurpose? "select-filter": "" }`}>Purpose</div>
             </div>
           </>
         )}
         {expandedFilter && selectDropDown()}
-      </div>
+      {/* </div> */}
+    </ShineBorder>
     </div>
   );
 };
 
 interface NodeProps {
   id: number;
+  pId: number;
   title: string;
   children: NodeProps[];
   version: string;
@@ -125,11 +129,13 @@ interface NodeProps {
 const nodes: NodeProps[] = [
   {
     id: 1,
+    pId:0,
     title: "State Hooks",
     children: [
       {
         id: 11,
-        title: "useState",
+                pId:1,
+title: "useState",
         version: "16",
         usability: "most",
         purpose: "basic",
@@ -137,7 +143,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 12,
-        title: "useReducer",
+                pId:1,
+title: "useReducer",
         version: "16",
         usability: "frequent",
         purpose: "intermediate",
@@ -148,11 +155,13 @@ const nodes: NodeProps[] = [
   },
   {
     id: 2,
-    title: "Context Hooks",
+            pId:0,
+title: "Context Hooks",
     children: [
       {
         id: 21,
-        title: "useContext",
+                pId:2,
+title: "useContext",
         version: "16",
         usability: "frequent",
         purpose: "basic",
@@ -163,11 +172,13 @@ const nodes: NodeProps[] = [
   },
   {
     id: 3,
-    title: "Ref Hooks",
+            pId:0,
+title: "Ref Hooks",
     children: [
       {
         id: 31,
-        title: "useRef",
+                pId:3,
+title: "useRef",
         version: "16",
         usability: "most",
         purpose: "basic",
@@ -175,7 +186,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 32,
-        title: "useImperativeHandle",
+                pId:3,
+title: "useImperativeHandle",
         version: "16",
         usability: "less",
         purpose: "advanced",
@@ -186,11 +198,13 @@ const nodes: NodeProps[] = [
   },
   {
     id: 4,
-    title: "Effect Hooks",
+            pId:0,
+title: "Effect Hooks",
     children: [
       {
         id: 41,
-        title: "useEffect",
+                pId:4,
+title: "useEffect",
         version: "16",
         usability: "most",
         purpose: "basic",
@@ -198,7 +212,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 42,
-        title: "useLayoutEffect",
+                pId:4,
+title: "useLayoutEffect",
         version: "16",
         usability: "less",
         purpose: "advanced",
@@ -206,7 +221,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 43,
-        title: "useInsertionEffect",
+                pId:4,
+title: "useInsertionEffect",
         version: "18",
         usability: "rarely",
         purpose: "advanced",
@@ -217,11 +233,13 @@ const nodes: NodeProps[] = [
   },
   {
     id: 5,
-    title: "Performance Hooks",
+            pId:0,
+title: "Performance Hooks",
     children: [
       {
         id: 51,
-        title: "useMemo",
+                pId:5,
+title: "useMemo",
         version: "16",
         usability: "frequent",
         purpose: "intermediate",
@@ -229,7 +247,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 52,
-        title: "useCallback",
+                pId:5,
+title: "useCallback",
         version: "16",
         usability: "frequent",
         purpose: "intermediate",
@@ -237,7 +256,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 53,
-        title: "useTransition",
+                pId:5,
+title: "useTransition",
         version: "18",
         usability: "less",
         purpose: "advanced",
@@ -245,7 +265,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 54,
-        title: "useDeferredValue",
+                pId:5,
+title: "useDeferredValue",
         version: "18",
         usability: "less",
         purpose: "advanced",
@@ -256,11 +277,13 @@ const nodes: NodeProps[] = [
   },
   {
     id: 6,
-    title: "Other Hooks",
+            pId:0,
+title: "Other Hooks",
     children: [
       {
         id: 61,
-        title: "useDebugValue",
+                pId:6,
+title: "useDebugValue",
         version: "16",
         usability: "rarely",
         purpose: "advanced",
@@ -268,7 +291,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 62,
-        title: "useId",
+                pId:6,
+title: "useId",
         version: "18",
         usability: "rarely",
         purpose: "advanced",
@@ -276,7 +300,8 @@ const nodes: NodeProps[] = [
       },
       {
         id: 63,
-        title: "useSyncExternalStore",
+                pId:6,
+title: "useSyncExternalStore",
         version: "18",
         usability: "rarely",
         purpose: "advanced",
@@ -288,6 +313,8 @@ const nodes: NodeProps[] = [
 ];
 
 interface NodeComponentProps {
+  containerRef:React.MutableRefObject<any>;
+  refs: React.MutableRefObject<any>;
   node: NodeProps;
   handleNodeClick: (id: number) => void;
   expandedNode: number | null;
@@ -296,6 +323,8 @@ interface NodeComponentProps {
 }
 
 const Node: React.FC<NodeComponentProps> = ({
+  containerRef,
+  refs,
   node,
   handleNodeClick,
   expandedNode,
@@ -312,35 +341,43 @@ const Node: React.FC<NodeComponentProps> = ({
       handleNodeClick(node.id);
     }
   };
+console.log(refs, node.id, node.pId);
 
   return (
-    <div className={`node-container ${expanded ? "expanded" : ""}`} 
-    // style={{ top: node.y, left: node.x }}
+    <>
+    <div  
+      ref={el => (refs.current[node.id] = el)}
+      className={`node-container ${expanded ? "expanded" : ""}`} 
     >
       <div className="mindmap-node" onClick={toggleExpand}>
         {node.title}
       </div>
-      {(expanded || (node.depth === 2 && expandedDepth2Node === node.id)) && node.children.length > 0 && (
+      {(expanded || (node.depth === 2 && expandedDepth2Node === node.id)) && node.children?.length > 0 && (
         <div className="children">
-          {node.children.map((child) => (
+          {node.children?.map((child) => (
             <React.Fragment key={child.id}>
-              {/* <svg className="curve-line">
-                <path
-                  d={`M${child?.x - node.x},0 C${(child.x - node.x) / 2},0 ${(child.x - node.x) / 2},${child.y - node.y} ${child.x - node.x},${child.y - node.y}`}
-                />
-              </svg> */}
               <Node
+              
+                refs={refs}
                 node={child}
                 handleNodeClick={handleNodeClick}
                 expandedNode={expandedNode}
                 expandedDepth2Node={expandedDepth2Node}
                 setExpandedDepth2Node={setExpandedDepth2Node}
               />
+              <AnimatedBeam
+              node={child}
+            containerRef={containerRef}
+            fromRef={refs.current[child.pId]}
+            toRef={refs.current[child.id]}
+          />
             </React.Fragment>
           ))}
         </div>
       )}
     </div>
+    
+    </>
   );
 };
 
@@ -348,7 +385,8 @@ const HooksCheatSheet: React.FC = () => {
   const [expandedNode, setExpandedNode] = useState<number | null>(null);
   const [expandedDepth2Node, setExpandedDepth2Node] = useState<number | null>(null);
   const [filteredData, setFilteredData] = useState<NodeProps[]>(nodes);
-
+  const refs = useRef<{ [key: number]: HTMLElement | null }>({});
+const containerRef = useRef(null)
   const handleFilterFunc = (data: SelectedFilter) => {
     const filteredNodes = nodes?.map((node) => ({
       ...node,
@@ -366,28 +404,30 @@ const HooksCheatSheet: React.FC = () => {
     setExpandedNode(expandedNode === id ? null : id);
   };
 
-  const calculateNodePositions = (nodes: NodeProps[], depth: number, parentX: number, parentY: number) => {
-    const width = 200;
-    const height = 100;
-    const xSpacing = 50;
-    const ySpacing = 100;
-    const calculatedNodes:any = nodes?.map((node, index) => {
-      const x = parentX + index * (width + xSpacing);
-      const y = parentY + (depth === 1 ? height : 0) + ySpacing;
-      const children = calculateNodePositions(node.children, depth + 1, x, y);
-      return { ...node, x, y, children };
-    });
-    return calculatedNodes;
-  };
-
-  const calculatedNodes = calculateNodePositions(filteredData, 1, 0, 0);
+  // const calculateNodePositions = (nodes: NodeProps[], depth: number, parentX: number, parentY: number) => {
+  //   const width = 200;
+  //   const height = 100;
+  //   const xSpacing = 50;
+  //   const ySpacing = 100;
+  //   const calculatedNodes = nodes?.map((node, index) => {
+  //     const x = parentX + index * (width + xSpacing);
+  //     const y = parentY + (depth === 1 ? height : 0) + ySpacing;
+  //     const children = calculateNodePositions(node.children, depth + 1, x, y);
+  //     return { ...node, x, y, children };
+  //   });
+  //   return calculatedNodes;
+  // };
+  // const calculatedNodes = calculateNodePositions(filteredData, 1, 0, 0);
 
   return (
-    <div className="mindmap">
+    <div ref={containerRef} className="mindmap">
       <Filter filterFunc={handleFilterFunc} />
       <div className="nodes-container">
-        {calculatedNodes.map((node:any) => (
+        <div></div>
+        {filteredData.map((node) => (
           <Node
+          containerRef = {containerRef}
+            refs={refs}
             key={node.id}
             node={node}
             handleNodeClick={handleNodeClick}
@@ -402,6 +442,7 @@ const HooksCheatSheet: React.FC = () => {
 };
 
 export default HooksCheatSheet;
+
 
 // const Circle = forwardRef<
 //   HTMLDivElement,
