@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BentoCard, BentoGrid } from "../animation/Bento";
 
-import "./blog.css";
+import styles from "../styles/blog.module.css";
 
 const blogData = [
 	{
@@ -9,7 +9,7 @@ const blogData = [
 		description:
 			"An in-depth look at how React hooks work and how to use them effectively.An in-depth look at how React hooks work and how to use them effectively.An in-depth look at how React hooks work and how to use them effectively.",
 		href: "/blog/react-hooks-cheatsheet",
-		cta: "Learn more",
+		cta: "Go to Blog",
 		background: <img className="absolute -right-20 -top-20 opacity-60" />,
 		className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
 	},
@@ -17,7 +17,7 @@ const blogData = [
 		name: "State Management with Redux",
 		description: "Search through all your files in one place.",
 		href: "/",
-		cta: "Learn more",
+		cta: "Go to Blog",
 		background: <img className="absolute -right-20 -top-20 opacity-60" />,
 		className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
 	},
@@ -25,7 +25,7 @@ const blogData = [
 		name: "Lifecycle of React",
 		description: "Supports 100+ languages and counting.",
 		href: "/",
-		cta: "Learn more",
+		cta: "Go to Blog",
 		background: <img className="absolute -right-20 -top-20 opacity-60" />,
 		className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
 	},
