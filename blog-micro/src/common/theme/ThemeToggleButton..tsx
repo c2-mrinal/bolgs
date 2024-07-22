@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import "./theme.css";
 import { useTheme } from "./ThemeContext";
 import MoonIcon, { SunIcon } from "../../../public/Icons/theme";
 import { BorderBeam } from "@/animation/BeamBorder";

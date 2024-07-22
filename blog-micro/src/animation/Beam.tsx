@@ -66,8 +66,6 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
 		  };
 
 	useEffect(() => {
-		console.log(node);
-
 		const updatePath = () => {
 			if (containerRef?.current && fromRef?.current && toRef?.current) {
 				const containerRect = containerRef.current.getBoundingClientRect();

@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import { BentoCard, BentoGrid } from "../animation/Bento";
-
-import styles from "../styles/blog.module.css";
-
 const blogData = [
 	{
 		name: "Understanding React Hooks",
 		description:
 			"An in-depth look at how React hooks work and how to use them effectively.An in-depth look at how React hooks work and how to use them effectively.An in-depth look at how React hooks work and how to use them effectively.",
-		href: "/blog/react-hooks-cheatsheet",
+		href: "/blogs/hooks-cheat-sheet",
 		cta: "Go to Blog",
-		background: <img className="absolute -right-20 -top-20 opacity-60" />,
+		background: "",
 		className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
 	},
 	{
@@ -18,7 +15,7 @@ const blogData = [
 		description: "Search through all your files in one place.",
 		href: "/",
 		cta: "Go to Blog",
-		background: <img className="absolute -right-20 -top-20 opacity-60" />,
+		background: "",
 		className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
 	},
 	{

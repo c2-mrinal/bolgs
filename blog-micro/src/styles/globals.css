@@ -59,8 +59,7 @@
 	}
 }
 a {
-	all: unset;
-	color: blue;
+	all: unset !important;
 }
 
 .noto-fonts {

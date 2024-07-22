@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 
 import { cn } from "@/lib/utils";
@@ -13,28 +13,18 @@ export interface MagicCardProps {
 	gradientOpacity?: number;
 }
 
-export function MagicCard({ children, className = "", gradientSize = 100, gradientColor = "#262626" }: MagicCardProps) {
-	const cardRef = useRef<HTMLDivElement>(null);
+export function MagicCard({ children, className = "", gradientSize = 200, gradientColor = "#262626" }: MagicCardProps) {
 	const mouseX = useMotionValue(0);
 	const mouseY = useMotionValue(0);
 
-	const background = useMotionTemplate`
-    radial-gradient(${gradientSize}px circle at ${mouseX}px ${mouseY}px, ${gradientColor}, transparent 10%)
-  `;
-
-	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-		if (cardRef.current) {
-			const { left, top } = cardRef.current.getBoundingClientRect();
-			mouseX.set(e.clientX - left);
-			mouseY.set(e.clientY - top);
-			// console.log(e.clientX, e.clientY, left, top);
-		}
-	};
-
 	return (
 		<div
-			ref={cardRef}
-			onMouseMove={handleMouseMove}
+			onMouseMove={(e) => {
+				const { left, top } = e.currentTarget.getBoundingClientRect();
+
+				mouseX.set(e.clientX - left);
+				mouseY.set(e.clientY - top);
+			}}
 			className={cn(
 				"group relative flex size-full overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-900 border text-black dark:text-white",
 				className
@@ -43,7 +33,11 @@ export function MagicCard({ children, className = "", gradientSize = 100, gradie
 			<div className="relative z-10">{children}</div>
 			<motion.div
 				className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
-				style={{ background }}
+				style={{
+					background: useMotionTemplate`
+						radial-gradient(${gradientSize}px circle at ${mouseX}px ${mouseY}px, ${gradientColor}, transparent 100%)
+					`,
+				}}
 			/>
 		</div>
 	);
