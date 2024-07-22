@@ -58,6 +58,32 @@
 		--chart-5: 340 75% 55%;
 	}
 }
+a {
+	all: unset !important;
+}
+
+.noto-fonts {
+	font-family: "Noto Sans", sans-serif;
+	font-optical-sizing: auto;
+	font-style: normal;
+	font-variation-settings: "wdth" 100;
+}
+.edu-capital-fonts {
+	text-transform: capitalize;
+	font-family: "Edu AU VIC WA NT Hand";
+	font-optical-sizing: auto;
+	font-style: normal;
+}
+.edu-fonts {
+	font-family: "Edu AU VIC WA NT Hand", cursive;
+	font-optical-sizing: auto;
+	font-style: normal;
+}
+.edu-cursive-fonts {
+	font-family: "Edu AU VIC WA NT Hand", cursive;
+	font-optical-sizing: auto;
+	font-style: normal;
+}
 
 @layer base {
 	* {
@@ -73,7 +99,7 @@ body.light {
 }
 
 body.dark {
-	background-color: #252525;
+	background-color: #0b1728;
 	color: white;
 }
 
@@ -88,11 +114,11 @@ body.dark {
 }
 
 .toggle-button.light {
-	background-color: white;
+	background-color: transparent;
 	color: black;
 }
 
 .toggle-button.dark {
-	background-color: #252525;
+	background-color: transparent;
 	color: white;
 }
