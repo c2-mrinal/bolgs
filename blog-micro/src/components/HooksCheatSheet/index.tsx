@@ -3,19 +3,20 @@ import ShineBorder from "@/animation/ShineBorder";
 import { AnimatedBeam } from "@/animation/Beam";
 import { filterList, filterData, nodes } from "@/data/hooksData";
 import HooksCard from "./HooksCard";
+
 interface FilterProps {
 	filterFunc: (data: SelectedFilter) => void;
 }
 
 interface SelectedFilter {
-	version: string;
-	usability: string;
-	purpose: string;
+	version?: string | null;
+	usability?: string | null;
+	purpose?: string | null;
 }
 
 const Filter: React.FC<FilterProps> = ({ filterFunc }) => {
 	const [expandedFilter, setExpandedFilter] = useState<string | null>(null);
-	const [selectedFilter, setSelectedFilter] = useState<SelectedFilter>({
+	const [selectedFilter, setSelectedFilter] = useState<any>({
 		version: "",
 		usability: "",
 		purpose: "",
@@ -37,9 +38,10 @@ const Filter: React.FC<FilterProps> = ({ filterFunc }) => {
 
 	const selectDropDown = () => {
 		const options = filterData[expandedFilter!];
+		const expFilter: string = expandedFilter ? selectedFilter[expandedFilter] : "version";
 		return (
 			<div className="dropdown-container">
-				<select onChange={handleSelectChange} value={selectedFilter[expandedFilter!]} defaultValue={expandedFilter!}>
+				<select onChange={handleSelectChange} value={expFilter || ""} defaultValue={expandedFilter!}>
 					{options?.map((val) => (
 						<option key={val.value} value={val.value}>
 							{val.name}
@@ -90,11 +92,24 @@ interface NodeProps {
 	id: number;
 	pId: number;
 	title: string;
-	children: NodeProps[];
-	version: string;
-	usability: string;
-	purpose: string;
+	children?: NodeProps[];
+	version?: string;
+	usability?: string;
+	purpose?: string;
 	depth: number;
+	details?: {
+		version: string;
+		usability: string;
+		purpose: string;
+		description: string[];
+		uses?: string[]; // Made optional
+		versionRelease?: string; // Made optional
+		internalWorking: string[];
+		codeExample?: {
+			code: string;
+			syntaxExplanation?: string[]; // Made optional
+		};
+	};
 }
 
 interface NodeComponentProps {
@@ -126,35 +141,51 @@ const Node: React.FC<NodeComponentProps> = ({
 			handleNodeClick(node.id);
 		}
 	};
+	function getRef<T>(ref: HTMLElement | React.RefObject<T> | null | undefined): React.RefObject<T> | null {
+		if (ref && !(ref instanceof HTMLElement) && "current" in ref) {
+			return ref as React.RefObject<T>;
+		}
+		return null;
+	}
 	return (
 		<>
-			<div ref={(el) => (refs.current[node.id] = el)} className={`node-container ${expanded ? "expanded" : ""}`}>
+			<div
+				ref={(el) => {
+					if (el) {
+						refs.current[node.id] = el;
+					}
+				}}
+				className={`node-container ${expanded ? "expanded" : ""}`}
+			>
 				<div className="mindmap-node" onClick={toggleExpand}>
 					{node.title}
 				</div>
-				{(expanded || (node.depth === 2 && expandedDepth2Node === node.id)) && node.children?.length > 0 && (
-					<div className="children">
-						{node.children?.map((child) => (
-							<React.Fragment key={child.id}>
-								<Node
-									containerRef={containerRef}
-									refs={refs}
-									node={child}
-									handleNodeClick={handleNodeClick}
-									expandedNode={expandedNode}
-									expandedDepth2Node={expandedDepth2Node}
-									setExpandedDepth2Node={setExpandedDepth2Node}
-								/>
-								<AnimatedBeam
-									node={child}
-									containerRef={containerRef}
-									fromRef={refs.current[child.pId]}
-									toRef={refs.current[child.id]}
-								/>
-							</React.Fragment>
-						))}
-					</div>
-				)}
+				{(expanded || (node.depth === 2 && expandedDepth2Node === node.id)) &&
+					node.children &&
+					node.children?.length > 0 && (
+						<div className="children">
+							{node.children &&
+								node.children.map((child) => (
+									<React.Fragment key={child.id}>
+										<Node
+											containerRef={containerRef}
+											refs={refs}
+											node={child}
+											handleNodeClick={handleNodeClick}
+											expandedNode={expandedNode}
+											expandedDepth2Node={expandedDepth2Node}
+											setExpandedDepth2Node={setExpandedDepth2Node}
+										/>
+										<AnimatedBeam
+											node={child}
+											containerRef={containerRef}
+											fromRef={getRef<HTMLElement>(refs?.current[child.pId]) || React.createRef<HTMLElement>()}
+											toRef={getRef<HTMLElement>(refs?.current[child.id]) || React.createRef<HTMLElement>()}
+										/>
+									</React.Fragment>
+								))}
+						</div>
+					)}
 			</div>
 		</>
 	);
@@ -168,10 +199,10 @@ const HooksCheatSheet: React.FC = () => {
 	const containerRef = useRef<HTMLDivElement | null>(null);
 
 	const handleFilterFunc = (data: SelectedFilter) => {
-		const filteredNodes = nodes?.map((node) => ({
+		const filteredNodes: NodeProps[] = nodes.map((node) => ({
 			...node,
 			children: node.children?.filter(
-				(child) =>
+				(child: NodeProps) =>
 					(!data.version || child.version === data.version) &&
 					(!data.usability || child.usability === data.usability) &&
 					(!data.purpose || child.purpose === data.purpose)
@@ -202,8 +233,8 @@ const HooksCheatSheet: React.FC = () => {
 						/>
 					))}
 				</div>
-				<div style={{ width: "80%" }}>
-					<HooksCard />
+				<div style={{ width: "75%" }}>
+					<HooksCard details={null} />
 				</div>
 			</div>
 		</div>
