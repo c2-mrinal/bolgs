@@ -10,7 +10,7 @@ export const RightArrowIcon = ({ height = 18, width = 18, className = "", fill =
 		<path
 			d="M4 12H20M20 12L16 8M20 12L16 16"
 			stroke={fill}
-			stroke-width="2"
+			strokeWidth="2"
 			stroke-linecap="round"
 			stroke-linejoin="round"
 		/>

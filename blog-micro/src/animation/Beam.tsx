@@ -9,8 +9,8 @@ export interface AnimatedBeamProps {
 	node: any;
 	className?: string;
 	containerRef: RefObject<HTMLElement>; // Container ref
-	fromRef: RefObject<HTMLElement>;
-	toRef: RefObject<HTMLElement>;
+	fromRef?: RefObject<HTMLElement> | undefined | null;
+	toRef?: RefObject<HTMLElement> | undefined | null;
 	curvature?: number;
 	reverse?: boolean;
 	pathColor?: string;
