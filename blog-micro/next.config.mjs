@@ -9,6 +9,7 @@ const nextConfig = {
 
 		return config;
 	},
+	output: "export", // This replaces the need for next export
 };
 
 export default nextConfig;
