@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, {useState} from "react";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 
 import { cn } from "@/lib/utils";
@@ -11,9 +11,11 @@ export interface MagicCardProps {
 	gradientSize?: number;
 	gradientColor?: string;
 	gradientOpacity?: number;
+	key?: number;
+
 }
 
-export function MagicCard({ children, className = "", gradientSize = 200, gradientColor = "#262626" }: MagicCardProps) {
+export function MagicCard({ children, className = "", gradientSize = 200, gradientColor = "#262626", key }: MagicCardProps) {
 	const mouseX = useMotionValue(0);
 	const mouseY = useMotionValue(0);
 
@@ -29,6 +31,7 @@ export function MagicCard({ children, className = "", gradientSize = 200, gradie
 				"group relative flex size-full overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-900 border text-black dark:text-white",
 				className
 			)}
+			key={key}
 		>
 			<div className="relative z-10">{children}</div>
 			<motion.div

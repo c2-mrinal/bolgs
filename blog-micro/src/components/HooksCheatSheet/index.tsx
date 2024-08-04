@@ -111,12 +111,25 @@ interface NodeProps {
 		};
 	};
 }
+interface Details {
+	version: string;
+	usability: string;
+	purpose: string;
+	description: string[];
+	uses: string[];
+	versionRelease: string;
+	internalWorking: string[];
+	codeExample: {
+		code: string;
+		syntaxExplanation: string[];
+	};
+}
 
 interface NodeComponentProps {
 	containerRef: React.MutableRefObject<HTMLDivElement | null>;
 	refs: React.MutableRefObject<{ [key: number]: HTMLElement | null }>;
 	node: NodeProps;
-	handleNodeClick: (id: number) => void;
+	handleNodeClick: any;
 	expandedNode: number | null;
 	expandedDepth2Node: number | null;
 	setExpandedDepth2Node: React.Dispatch<React.SetStateAction<number | null>>;
@@ -138,8 +151,8 @@ const Node: React.FC<NodeComponentProps> = ({
 			setExpandedDepth2Node(node.id === expandedDepth2Node ? null : node.id);
 		} else {
 			setExpanded(!expanded);
-			handleNodeClick(node.id);
 		}
+		handleNodeClick(node);
 	};
 	function getRef<T>(ref: HTMLElement | React.RefObject<T> | null | undefined): React.RefObject<T> | null {
 		if (ref && !(ref instanceof HTMLElement) && "current" in ref) {
@@ -195,6 +208,7 @@ const HooksCheatSheet: React.FC = () => {
 	const [expandedNode, setExpandedNode] = useState<number | null>(null);
 	const [expandedDepth2Node, setExpandedDepth2Node] = useState<number | null>(null);
 	const [filteredData, setFilteredData] = useState<NodeProps[]>(nodes);
+	const [selectedData, setSelectedData] = useState<Details | null>(null);
 	const refs = useRef<{ [key: number]: HTMLElement | null }>({});
 	const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -209,10 +223,17 @@ const HooksCheatSheet: React.FC = () => {
 			),
 		}));
 		setFilteredData(filteredNodes);
+		setSelectedData(null)
+
 	};
 
-	const handleNodeClick = (id: number) => {
-		setExpandedNode(expandedNode === id ? null : id);
+	const handleNodeClick = (node: any) => {
+		if (node.depth === 2) {
+			setSelectedData(node.details)
+		} else {
+			setExpandedNode(expandedNode === node.id ? null : node.id);
+
+		}
 	};
 
 	return (
@@ -233,9 +254,9 @@ const HooksCheatSheet: React.FC = () => {
 						/>
 					))}
 				</div>
-				<div style={{ width: "75%" }}>
-					<HooksCard details={null} />
-				</div>
+				{selectedData && <div style={{ width: "75%" }}>
+					<HooksCard details={selectedData} />
+				</div>}
 			</div>
 		</div>
 	);
